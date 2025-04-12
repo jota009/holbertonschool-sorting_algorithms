@@ -29,6 +29,8 @@ void sorted_insert(listint_t **sorted, listint_t *new_node)
 
 	print_list(*sorted);
 }
+
+
 /**
  * insertion_sort_list - sorts doubly linked list
  * ascending using Insertion sort
@@ -37,18 +39,41 @@ void sorted_insert(listint_t **sorted, listint_t *new_node)
 
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *sorted = NULL;
-	listint_t *current;
-	listint_t *next;
+	listint_t *current, *prev_node;
+
+	if (list == NULL || *list == NULL)
+	{
+		return;
+	}
 
 	current = *list;
 
 	while (current != NULL)
 	{
-		next = current->next;
-		sorted_insert(&sorted, current);
-		current = next;
-	}
 
-	*list = sorted;
+		while (current->prev != NULL && current->n < current->prev->n)
+		{
+			prev_node = current->prev;
+
+			if (prev_node->prev != NULL)
+			{
+				prev_node->prev->next = current;
+			}
+			current->prev = prev_node->prev;
+
+			prev_node->next = current->next;
+
+			if (current->next != NULL)
+				current->next->prev = prev_node;
+
+			prev_node->prev = current;
+			current->next = prev_node;
+
+			if (current->prev == NULL)
+				*list = current;
+
+			print_list(*list);
+		}
+		current = current->next;
+	}
 }
